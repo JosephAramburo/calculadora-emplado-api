@@ -12,6 +12,24 @@ dotenv.config({
   path: path.join(__dirname,`${process.env.NODE_ENV || ''}.env`)
 });
 
+//*******************CONNECTION DATABASE
+const sequelize = require('./configs/db.config');
+
+async function connect(){
+  try {
+    await sequelize.authenticate().then(res => {
+      console.log('Conexion exitosa a la base de datos');
+    }, (err) => {
+      console.log('No se pudo conectar a la base de datos: ', err);
+    });
+  } catch (error) {
+    console.log('No se pudo conectar a la base de datos: ', error);
+  }
+}
+
+connect();
+//****************************
+
 var indexRouter = require('./routes/index');
 
 var app = express();

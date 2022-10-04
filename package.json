@@ -16,6 +16,7 @@
     "http-errors": "~1.6.2",
     "moment-timezone": "^0.5.37",
     "morgan": "~1.9.0",
+    "mysql2": "^2.3.3",
     "pm2": "^5.2.0",
     "sequelize": "^6.24.0"
   },
