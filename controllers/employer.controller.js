@@ -1,6 +1,7 @@
 const Employer      = require('../models/employer.model');
 const Role          = require('../models/role.model');
 const TypeEmployer  = require('../models/typeEmployer.model');
+const { Op }        = require('sequelize');
 
 function get(req, res, next){
     Employer.findAll({}).then(response => {
@@ -52,6 +53,49 @@ function paginated(req, res, next){
     });
 }
 
+function autocomplete(req, res, next){
+    const queryParams = req.query;
+
+    let filter = queryParams.filter || '';
+
+    if(filter == ''){
+        return res.status(200).json([]);
+    }
+
+    Employer.findAll({
+        attributes: ['id','name', 'lastName'],
+        where: { 
+            status: 1,
+            [Op.or]:{
+                id      : {[Op.like] : `%${filter}%`},
+                name    : {[Op.like] : `%${filter}%`},
+                lastName: {[Op.like] : `%${filter}%`},
+            }
+        },
+        offset      : 0,
+        limit       : 20
+    }).then(response => {
+        return res.status(200).json(response);
+    }).catch(err => {
+        console.log(err)
+        return res.status(409).json({message : 'Problemas para buscar al empleado, verificar la información por favor'});
+    });
+}
+
+function getByIdDetail(req, res, next){
+    const { id } = req.params;
+    Employer.findByPk(id,{
+        include     : [
+            {model: Role,           attributes: ['name'], required: false},
+            {model: TypeEmployer,   attributes: ['name'], required: false}
+        ]
+    }).then(response => {
+        return res.status(200).json(response);
+    }).catch(err => {
+        return res.status(409).json({message: "No se encontró registro"});
+    });
+}
+
 async function post(req, res, next){
     let body        = req.body;
 
@@ -80,6 +124,8 @@ async function put(req, res, next){
         return res.status(409).json({message : 'El empleado no existe'});
     }
 
+    delete body.id;
+
     find.update(body).then(response => {
         return res.status(200).json(response);
     }).catch(err => {
@@ -103,4 +149,4 @@ async function deleted(req, res, next){
     });
 }
 
-module.exports = { get, getById, paginated, post, put, deleted }
+module.exports = { get, getById, getByIdDetail, autocomplete, paginated, post, put, deleted }
