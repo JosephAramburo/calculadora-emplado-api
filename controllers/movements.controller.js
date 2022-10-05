@@ -1,5 +1,9 @@
 const Movement = require('../models/movements.model');
 
+const HOUR_BY_DAY       = 8;
+const PRICE_BY_HOUR     = 30;
+const PRICE_BY_DELIVERY = 5;
+
 async function post(req, res, next){
     let body = req.body;
     delete body.id;
@@ -11,17 +15,12 @@ async function post(req, res, next){
     }
 
 
-    let hourByDay           = 8;
-    let amountByDay         = hourByDay * 30;
-    let amountByDelivery    = 5 * parseInt(body.quantityDeliveries);
-    let bonus               = 0;
+    let amountByDay         = HOUR_BY_DAY * PRICE_BY_HOUR;
+    let amountByDelivery    = PRICE_BY_DELIVERY * parseInt(body.quantityDeliveries);
+    let bonus               = getBonusByRole(find.roleId);
 
-    if(find.roleId == 1){//CHOFER
-        bonus = hourByDay * 10;
-    }
-
-    if(find.roleId == 1){//CARGADORES
-        bonus = hourByDay * 5;
+    if(find.roleId == 3 && body.coverShifts == '1'){
+        bonus =  getBonusByRole(find.roleId);
     }
 
 
@@ -30,6 +29,20 @@ async function post(req, res, next){
     }).catch(err => {
 
     });
+}
+
+function getBonusByRole(roleId){
+    let bonus  = 0;
+
+    if(roleId == 1){//CHOFER
+        bonus = HOUR_BY_DAY * 10;
+    }
+
+    if(roleId == 2){//CARGADORES
+        bonus = HOUR_BY_DAY * 5;
+    }
+
+    return bonus;
 }
 
 module.exports = { post }
