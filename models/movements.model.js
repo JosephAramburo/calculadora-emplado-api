@@ -1,6 +1,7 @@
-const { Sequelize, Model }   = require("sequelize");
-const EmployerModel          = require('./employer.model');
-const sequelize              = require('../configs/db.config');
+const { Sequelize, Model }  = require("sequelize");
+const EmployerModel         = require('./employer.model');
+const RoleModel             = require('./role.model');
+const sequelize             = require('../configs/db.config');
 
 class Movement extends Model {}
 
@@ -13,9 +14,17 @@ Movement.init({
         type      : Sequelize.INTEGER,
         allowNull : false
     },
-    quantityDaysShifts  :  Sequelize.INTEGER,
     coverShifts         : Sequelize.CHAR(1),
     dateMovement        : Sequelize.DATE,
+    daysCovered         : Sequelize.INTEGER,
+    roleCoveredId       : Sequelize.INTEGER,
+    amountByMonth       : Sequelize.DECIMAL(16,4),
+    amountByDelivery    : Sequelize.DECIMAL(16,4),
+    bonus               : Sequelize.DECIMAL(16,4),
+    amountToPayment     : Sequelize.DECIMAL(16,4),
+    sumAmounts          : Sequelize.DECIMAL(16,4),
+    amountVouchers      : Sequelize.DECIMAL(16,4),
+    total               : Sequelize.DECIMAL(16,4),
     createdAt           : Sequelize.DATE
 },{ 
     sequelize,
@@ -24,6 +33,7 @@ Movement.init({
     timestamps      : false 
 });
 
-Movement.hasOne(EmployerModel, { foreignKey: 'id', sourceKey: "employerId"});
+Movement.hasOne(EmployerModel,  { foreignKey: 'id', sourceKey: "employerId"});
+Movement.hasOne(RoleModel,      { foreignKey: 'id', sourceKey: "roleCoveredId"});
 
 module.exports = Movement;

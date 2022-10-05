@@ -34,6 +34,7 @@ var indexRouter         = require('./routes/index');
 var employerRouter      = require('./routes/employer.route');
 var roleRouter          = require('./routes/role.route');
 var typeEmployerRouter  = require('./routes/typeEmployer.route');
+var movementsRouter     = require('./routes/movements.route');
 
 var app = express();
 
@@ -59,6 +60,7 @@ app.use('/',            indexRouter);
 app.use('/employer',    employerRouter);
 app.use('/role',        roleRouter);
 app.use('/typeEmployer',typeEmployerRouter);
+app.use('/movement',    movementsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

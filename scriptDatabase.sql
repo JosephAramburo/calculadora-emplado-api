@@ -36,7 +36,18 @@ CREATE TABLE movements(
     dateMovement DATE NOT NULL,
 	quantityDeliveries INT NOT NULL,
     coverShifts CHAR(1) DEFAULT 0,
-    quantityDaysShifts INT,
-    createdAt DATETIME DEFAULT NOW()
+    daysCovered INT(2),
+    roleCoveredId INT,
+    amountByMonth DECIMAL(16,4),
+    amountByDelivery DECIMAL(16,4),
+    bonus DECIMAL(16,4),
+    amountToPayment DECIMAL(16,4),
+    sumAmounts DECIMAL(16,4),
+    amountVouchers DECIMAL(16,4),
+    total DECIMAL(16,4),
+    createdAt DATETIME DEFAULT NOW(),
+    FOREIGN KEY (employerId) REFERENCES employer(id),
+    FOREIGN KEY (roleCoveredId) REFERENCES Role(id)
 );
+-- DROP TABLE movements;
 
