@@ -6,7 +6,8 @@ class TypeEmployer extends Model {}
 TypeEmployer.init({
     name: {
         type      : Sequelize.STRING(100),
-        allowNull : false
+        allowNull : false,
+        unique    : true
     },
     status: {
         type        : Sequelize.CHAR(1),
