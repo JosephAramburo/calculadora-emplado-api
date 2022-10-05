@@ -38,4 +38,8 @@ Employer.init({
 Employer.hasOne(RoleModel,          { foreignKey: 'id', sourceKey: "roleId"});
 Employer.hasOne(TypeEmployerModel,  { foreignKey: 'id', sourceKey: "typeEmployerId"});
 
+Employer.beforeUpdate(async (employer, options) => {
+    employer.updatedAt = new Date().toISOString();
+});
+
 module.exports = Employer;

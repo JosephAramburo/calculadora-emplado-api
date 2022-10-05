@@ -10,6 +10,15 @@ function get(req, res, next){
     });
 }
 
+function getById(req, res, next){
+    const { id } = req.params;
+    Employer.findByPk(id).then(response => {
+        return res.status(200).json(response);
+    }).catch(err => {
+        return res.status(409).json({message: "No se encontró registro"});
+    });
+}
+
 function paginated(req, res, next){
     var query   = req.query;
     let limit   = parseInt(query.limit) || 10;
@@ -28,7 +37,6 @@ function paginated(req, res, next){
 
     if(queryF != ''){
         options.where = {
-            // estatus: 1,
             [Op.or]:{
                 id                  :{[Op.like] : `%${queryF}%`},
                 name                :{[Op.like] : `%${queryF}%`},
@@ -62,4 +70,37 @@ async function post(req, res, next){
     });
 }
 
-module.exports = { get, paginated, post }
+async function put(req, res, next){
+    const { id } = req.params;
+    let body     = req.body;
+
+    let find = await Employer.findByPk(id);
+
+    if(find == null){
+        return res.status(409).json({message : 'El empleado no existe'});
+    }
+
+    find.update(body).then(response => {
+        return res.status(200).json(response);
+    }).catch(err => {
+        return res.status(409).json({message: "No se encontró registro"});
+    });
+}
+
+async function deleted(req, res, next){
+    const { id } = req.params;
+
+    let find = await Employer.findByPk(id);
+
+    if(find == null){
+        return res.status(409).json({message : 'El empleado no existe'});
+    }
+
+    find.update({status: '0'}).then(response => {
+        return res.status(200).json(response);
+    }).catch(err => {
+        return res.status(409).json({message: "No se encontró registro"});
+    });
+}
+
+module.exports = { get, getById, paginated, post, put, deleted }
